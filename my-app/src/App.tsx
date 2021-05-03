@@ -2,6 +2,8 @@ import React from "react";
 import "./App.css";
 import GameScreen from "./GameScreen";
 
+// TODO: change app name
+// TODO: add HTTPS to run script
 function App() {
   // window.screen.orientation.lock("landscape-primary");
 
