@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import GameScreen from "./GameScreen";
+import { Game } from "./game-components/Game";
 
 // TODO: change app name
 // TODO: add HTTPS to run script
@@ -9,20 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
-      <GameScreen />
+      <Game />
     </div>
   );
 }

@@ -1,0 +1,10 @@
+.wordList {
+    display: inline-block;
+    float: left;
+    width: 50vw;
+}
+
+ul {
+    list-style: none;
+    padding-inline-start: 0px;
+}

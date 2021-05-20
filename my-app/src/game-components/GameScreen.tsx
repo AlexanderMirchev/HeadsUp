@@ -1,19 +1,21 @@
 import React from "react";
-import "./App.css";
+import "../App.css";
 
-type PropsT = {};
-
-type StateT = {
-  words: string[];
-  currentIndex: number;
-  timeRemaining: number;
-  score: number;
-  guessedWords: string[];
-  passedWords: string[];
-  orientation: "center" | "top" | "bottom" | undefined;
+type PropsT = {
+  words: string[]
+  onTimeUp: (guessed: string[], passed: string[], score: number) => void
 };
 
-class GameScreen extends React.Component<PropsT, StateT> {
+type StateT = {
+  currentIndex: number
+  timeRemaining: number
+  score: number
+  guessedWords: string[]
+  passedWords: string[]
+  orientation: "center" | "top" | "bottom" | undefined
+};
+
+export class GameScreen extends React.Component<PropsT, StateT> {
   // TODO: play sound on action
   private static guessedWordAudio = new Audio("./correct.mp3");
   private static passedWordAudio = new Audio("./correct.mp3");
@@ -24,7 +26,6 @@ class GameScreen extends React.Component<PropsT, StateT> {
     super(props);
 
     this.state = {
-      words: [],
       currentIndex: -1,
       timeRemaining: 60,
       score: 0,
@@ -35,18 +36,7 @@ class GameScreen extends React.Component<PropsT, StateT> {
   }
 
   componentDidMount() {
-    // TODO: add state isLoading and loading screen when data is fetched
-    fetch("https://random-word-api.herokuapp.com/word?number=100")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({
-          words: data,
-          currentIndex: -1,
-        });
-      });
-
-      // TODO: handle other orientations (fixed landscape?)
+    // TODO: handle other orientations (fixed landscape?)
     window.addEventListener(
       "deviceorientation",
       (event) => {
@@ -68,9 +58,15 @@ class GameScreen extends React.Component<PropsT, StateT> {
       },
       true
     );
-    // TODO: Game over screen with guessed and passed words
     this.timerID = setInterval(
-      () => this.setState({ timeRemaining: this.state.timeRemaining - 1 }),
+      () => {
+        if (this.state.timeRemaining === 0) {
+          this.props.onTimeUp(this.state.guessedWords, this.state.passedWords, this.state.score)
+        }
+        else {
+          this.setState({ timeRemaining: this.state.timeRemaining - 1 })
+        }
+      },
       1000
     );
   }
@@ -86,7 +82,7 @@ class GameScreen extends React.Component<PropsT, StateT> {
     });
 
     const newGuessedWords = this.state.guessedWords;
-    newGuessedWords.push(this.state.words[this.state.currentIndex]);
+    newGuessedWords.push(this.props.words[this.state.currentIndex]);
 
     this.setState({
       orientation: "bottom",
@@ -100,7 +96,7 @@ class GameScreen extends React.Component<PropsT, StateT> {
     GameScreen.passedWordAudio.play();
 
     const newPassedWords = this.state.passedWords;
-    newPassedWords.push(this.state.words[this.state.currentIndex]);
+    newPassedWords.push(this.props.words[this.state.currentIndex]);
 
     this.setState({
       orientation: "top",
@@ -118,13 +114,10 @@ class GameScreen extends React.Component<PropsT, StateT> {
 
   render() {
     return (
-      // TODO: Loading screen and game over screen
       <div className="Game-screen">
         <p className="timer">{this.state.timeRemaining} sec</p>
-        <p className="word">{this.state.words[this.state.currentIndex]}</p>
+        <p className="word">{this.props.words[this.state.currentIndex]}</p>
       </div>
     );
   }
 }
-
-export default GameScreen;
